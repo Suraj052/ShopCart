@@ -2,7 +2,7 @@
     package="com.example.code">
    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
    <application
-        android:label="code"
+        android:label="ShopCart"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

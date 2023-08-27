@@ -55,6 +55,4 @@ class ProductController extends GetxController
         womenList.value = products;
       }
   }
-
-
 }

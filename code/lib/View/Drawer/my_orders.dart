@@ -1,5 +1,10 @@
+import 'package:code/Controller/cart_controller.dart';
+import 'package:code/Model/product_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:intl/intl.dart';
 
 class MyOrders extends StatefulWidget {
   const MyOrders({Key? key}) : super(key: key);
@@ -9,12 +14,26 @@ class MyOrders extends StatefulWidget {
 }
 
 class _MyOrdersState extends State<MyOrders> {
+
+  final CartController orderController = Get.put(CartController());
+
+  @override
+  void initState()
+  {
+    print("initState");
+    orderController.getFromOrder();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: HexColor("#fe5858"),
+            statusBarIconBrightness: Brightness.light),
         backgroundColor: HexColor("#fe5858"),
         elevation: 0,
         automaticallyImplyLeading: false,
@@ -27,21 +46,27 @@ class _MyOrdersState extends State<MyOrders> {
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 10),
-        child: Container(
-          child: ListView
-            (
-            children: [
-              productCard(size),
-              productCard(size),
-              productCard(size),
-              productCard(size),
-            ],
-          ),
+        child: Column(
+          children: [
+            Expanded(
+                child: Obx(() =>
+                    ListView.separated(
+                      physics: BouncingScrollPhysics(),
+                      separatorBuilder: (context, index)=>Container(height: 8),
+                      itemCount: orderController.orderItems.length,
+                      itemBuilder: (context,index)
+                      {
+                        return productCard(orderController.orderItems[index],size);
+                      },
+                    ),
+                )
+            ),
+          ],
         ),
       ),
     );
   }
-  Widget productCard(Size size)
+  Widget productCard(ProductModel productModel,Size size)
   {
     return Center(
       child: Column(
@@ -58,13 +83,15 @@ class _MyOrdersState extends State<MyOrders> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
+                    padding: EdgeInsets.all(10),
                     height: size.height*0.10,
                     width: size.width*0.25,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10.0),
+
                       image: DecorationImage(
-                        image: NetworkImage("https://images.unsplash.com/photo-1630080644615-0b157f1574ec?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80"),
-                        fit: BoxFit.fill,
+                        image: NetworkImage(productModel.image),
+                        fit: BoxFit.contain,
                       ),
                     ),
                   ),
@@ -75,7 +102,7 @@ class _MyOrdersState extends State<MyOrders> {
                         Container(
                           width : size.width*0.50,
                           child: Text(
-                              "Delivered on Nov 16,2021",
+                              "Delivery by "+ DateFormat('MMM d, yyyy').format(DateTime.now().add(Duration(days: 7))),
                               style: TextStyle(fontSize: 15,fontFamily: 'ProductSans',fontWeight: FontWeight.w500,color: Colors.black)
                           ),
                         ),
@@ -83,7 +110,7 @@ class _MyOrdersState extends State<MyOrders> {
                         Container(
                           width : size.width*0.55,
                           child: Text(
-                              "WD 4TB Gaming Drive Works with Playstation 4 Portable External Hard Drive",
+                              productModel.title,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(fontSize: 15,fontFamily: 'ProductSans',color: Colors.grey)
@@ -100,7 +127,6 @@ class _MyOrdersState extends State<MyOrders> {
       ),
     );
   }
-  
 }
 
 //RED : fe5858

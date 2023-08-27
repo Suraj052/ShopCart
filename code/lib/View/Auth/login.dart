@@ -9,17 +9,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import '../../main.dart';
 
 class Login extends StatefulWidget {
 
   final VoidCallback onClickedSignedUp;
-
-  const Login({
-    Key? key,
-    required this.onClickedSignedUp,
-  }) : super(key: key);
+  const Login({Key? key,required this.onClickedSignedUp}) : super(key: key);
 
   @override
   State<Login> createState() => _LoginState();
@@ -133,10 +130,7 @@ class _LoginState extends State<Login> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: HexColor("#fe5858"),
                       ),
-                      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen())),
-                      // shape: RoundedRectangleBorder(
-                      //     borderRadius: BorderRadius.circular(10)
-                      // ),
+                      onPressed: () => signin(),
                       child: Padding(
                         padding: EdgeInsets.all(5.0),
                         child: Text('Sign In',
@@ -211,7 +205,7 @@ class _LoginState extends State<Login> {
 
     }on FirebaseAuthException catch (e)
     {
-      print("suraj");
+      print(e.toString());
       showToast();
 
 

@@ -1,3 +1,4 @@
+
 import 'package:code/View/Drawer/my_account.dart';
 import 'package:code/View/Drawer/my_cart.dart';
 import 'package:code/View/Drawer/my_orders.dart';
@@ -6,7 +7,9 @@ import 'package:code/View/electronics_screen.dart';
 import 'package:code/View/jewelery_screen.dart';
 import 'package:code/View/mens_screen.dart';
 import 'package:code/View/womens_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -18,6 +21,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -27,9 +31,13 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.white,
         drawer: NavigationDrawer(),
         appBar: AppBar(
+          systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarColor: HexColor("#fe5858"),
+              statusBarIconBrightness: Brightness.light),
           iconTheme: IconThemeData(color: HexColor("#fe5858")),
           backgroundColor: Colors.white,
           elevation: 0,
+          title: Center(child: Text("SHOPCART",style: TextStyle(color: Color(0xFF25262d),fontSize: 18,fontFamily: 'Recoleta'))),
           actions: [
           IconButton(
                   onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Notifications())),
@@ -71,7 +79,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       ]
                   ),
                 )
-
               ]
             ),
           ),
@@ -136,7 +143,7 @@ class NavigationDrawer extends StatelessWidget {
         ListTile(
           leading: Icon(Icons.shopping_cart),
           title: Text("My Cart",style: TextStyle(color: HexColor("#39b5fd"))),
-          onTap: ()=> Navigator.push(context, MaterialPageRoute(builder: (context) => MyCart())),
+          onTap: ()=> Navigator.push(context,MaterialPageRoute(builder: (context) => MyCart())),
         ),
         ListTile(
           leading: Icon(Icons.verified_user_rounded),
@@ -163,7 +170,7 @@ class NavigationDrawer extends StatelessWidget {
         ListTile(
           leading: Icon(Icons.logout),
           title: Text("Logout",style: TextStyle(color: HexColor("#39b5fd"))),
-          onTap: (){},
+          onTap: ()=>FirebaseAuth.instance.signOut(),
         ),
       ],
     ),

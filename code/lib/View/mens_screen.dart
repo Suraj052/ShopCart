@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:code/Model/product_model.dart';
+import 'package:code/View/detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:get/get.dart';
@@ -41,7 +42,8 @@ class _MenScreenState extends State<MenScreen> {
                   itemCount: electronicsController.menList.length,
                   itemBuilder: (BuildContext context, int index)
                   {
-                    return productCard(electronicsController.menList[index],size);
+                    return GestureDetector(child: productCard(electronicsController.menList[index],size),
+                        onTap: ()=> Navigator.push(context, MaterialPageRoute(builder: (context) => DetailPage(pModel: electronicsController.menList[index]))),);
                   }, separatorBuilder: (BuildContext context, int index) {
                   return SizedBox(height: size.height*0.015);
                   },
@@ -147,7 +149,7 @@ class _MenScreenState extends State<MenScreen> {
                       ],
                     ),
                     //SizedBox(height: size.height*0.06),
-                    Text('\$ ' + electronicsModel.price.toString(),style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
+                    Text('\Rs ' + electronicsModel.price.toString(),style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
                   ],
                 ),
               )

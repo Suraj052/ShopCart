@@ -23,7 +23,7 @@ class _ForgotState extends State<Forgot> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: HexColor('#ebeff5'),
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,7 +35,7 @@ class _ForgotState extends State<Forgot> {
                     style: TextStyle(
                         fontSize: 35,
                         fontFamily: 'Recoleta',
-                        color: HexColor('#091945')
+                        color: HexColor('#39b5fd')
                     ),
                   ),
                 ),
@@ -47,7 +47,7 @@ class _ForgotState extends State<Forgot> {
                     width: 70,
                     child: Icon(
                       Icons.question_mark_rounded,
-                      color: HexColor("#091945"),
+                      color: HexColor("#39b5fd"),
                       size: 70,
                     ),
                   ),
@@ -86,12 +86,9 @@ class _ForgotState extends State<Forgot> {
                     width: size.width*0.9,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: HexColor("#091945"),
+                        backgroundColor: HexColor("#fe5858"),
                       ),
                       onPressed: ()=> forgot(),
-                      // shape: RoundedRectangleBorder(
-                      //     borderRadius: new BorderRadius.circular(10)
-                      // ),
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: Text('Reset',
@@ -109,7 +106,7 @@ class _ForgotState extends State<Forgot> {
                       onPressed: () => Navigator.of(context).pop(),
                       child:Text('Back to Login Page',
                         style: TextStyle(
-                            color: HexColor("#091945"),
+                            color: HexColor("#39b5fd"),
                             fontWeight: FontWeight.bold,
                             fontSize: 16.0
                         ),
@@ -139,3 +136,5 @@ void showToast()=>Fluttertoast.showToast(
   gravity: ToastGravity.BOTTOM,
 );
 
+//RED : fe5858
+//BLUE : 39b5fd

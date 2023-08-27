@@ -2,6 +2,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:code/Controller/product_controller.dart';
 import 'package:code/Model/product_model.dart';
+import 'package:code/View/detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -42,7 +43,10 @@ class _ElectronicsScreenState extends State<ElectronicsScreen> {
                 itemCount: electronicsController.electronicsList.length,
                 itemBuilder: (BuildContext context, int index)
                 {
-                  return productCard(electronicsController.electronicsList[index],size);
+                  return GestureDetector(
+                      child: productCard(electronicsController.electronicsList[index],size),
+                      onTap: ()=>Navigator.push(context,MaterialPageRoute(builder: (context) => DetailPage(pModel: electronicsController.electronicsList[index])),
+                  ));
                 }, separatorBuilder: (BuildContext context, int index) {
                       return SizedBox(height: size.height*0.015);
                 },
@@ -85,19 +89,7 @@ class _ElectronicsScreenState extends State<ElectronicsScreen> {
     );
   }
 
-  void _toggle()
-  {
-    setState(() {
-      if(_isFavorite)
-        {
-          _isFavorite=false;
-        }
-      else
-        {
-          _isFavorite = true;
-        }
-    });
-  }
+
 
   Widget cardimage(String link)
   {
@@ -162,7 +154,7 @@ class _ElectronicsScreenState extends State<ElectronicsScreen> {
                       ],
                     ),
                     //SizedBox(height: size.height*0.06),
-                    Text('\$ ' + electronicsModel.price.toString(),style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
+                    Text('\Rs ' + electronicsModel.price.toString(),style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
                   ],
                 ),
               )

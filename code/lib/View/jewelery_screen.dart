@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:code/Controller/product_controller.dart';
 import 'package:code/Model/product_model.dart';
+import 'package:code/View/detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -40,7 +41,9 @@ class _JeweleryScreenState extends State<JeweleryScreen> {
                   itemCount: electronicsController.jeweleryList.length,
                   itemBuilder: (BuildContext context, int index)
                   {
-                    return productCard(electronicsController.jeweleryList[index],size);
+                    return GestureDetector(
+                        onTap: ()=> Navigator.push(context, MaterialPageRoute(builder: (context) => DetailPage(pModel: electronicsController.jeweleryList[index]))),
+                        child: productCard(electronicsController.jeweleryList[index],size));
                   }, separatorBuilder: (BuildContext context, int index) {
                   return SizedBox(height: size.height*0.015);
                 },
@@ -146,7 +149,7 @@ class _JeweleryScreenState extends State<JeweleryScreen> {
                       ],
                     ),
                     //SizedBox(height: size.height*0.06),
-                    Text('\$ ' + electronicsModel.price.toString(),style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
+                    Text('\Rs ' + electronicsModel.price.toString(),style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
                   ],
                 ),
               )

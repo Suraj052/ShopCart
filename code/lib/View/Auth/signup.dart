@@ -1,10 +1,13 @@
 // ignore_for_file: deprecated_member_use
 
 
+import 'package:code/Model/user_model.dart';
+import 'package:code/Services/firebase_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 import '../../main.dart';
@@ -28,6 +31,8 @@ class _SignupState extends State<Signup> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final mobileController  = TextEditingController();
+
   @override
   void dispose() {
     emailController.dispose();
@@ -38,7 +43,7 @@ class _SignupState extends State<Signup> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: HexColor('#ebeff5'),
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Container(
             child: Column(
@@ -51,7 +56,7 @@ class _SignupState extends State<Signup> {
                     style: TextStyle(
                         fontSize: 35,
                         fontFamily: 'Recoleta',
-                        color: HexColor('#091945')
+                        color: HexColor('#39b5fd')
                     ),
                   ),
                 ),
@@ -63,7 +68,7 @@ class _SignupState extends State<Signup> {
                     width: 70,
                     child: Icon(
                       Icons.admin_panel_settings_rounded,
-                      color: HexColor("#091945"),
+                      color: HexColor("#39b5fd"),
                       size: 70,
                     ),
                   ),
@@ -147,6 +152,34 @@ class _SignupState extends State<Signup> {
                       ),
                     )
                 ),
+                SizedBox(height: 20.0),
+                Padding(
+                    padding: const EdgeInsets.fromLTRB(22.0,0.0, 22.0,0.0),
+                    child:Container(
+                      height: size.height*0.06,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 5.0,
+                            offset: Offset(0.0,2.0),
+                          )]
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 20.0),
+                        child: TextFormField(
+                          controller: mobileController,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Contact',
+                          ),
+                        ),
+                      ),
+                    )
+                ),
+
                 SizedBox(height: 30),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(22.0,0.0, 22.0,0.0),
@@ -155,12 +188,9 @@ class _SignupState extends State<Signup> {
                     width: size.width*0.9,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: HexColor("#091945"),
+                        backgroundColor: HexColor("#fe5858"),
                       ),
                       onPressed: signup,
-                      // shape: RoundedRectangleBorder(
-                      //     borderRadius: new BorderRadius.circular(10)
-                      // ),
                       child: Padding(
                         padding: EdgeInsets.all(5.0),
                         child: Text('Sign Up',
@@ -187,7 +217,7 @@ class _SignupState extends State<Signup> {
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               decoration: TextDecoration.underline,
-                              color: HexColor("#091945"),
+                              color: HexColor("#39b5fd"),
                               fontSize: 17.0,
                             ),
                           ),
@@ -201,26 +231,42 @@ class _SignupState extends State<Signup> {
     );
   }
   Future signup() async {
-
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => Center(child: CircularProgressIndicator(valueColor:AlwaysStoppedAnimation<Color>(Colors.white))),
     );
-
     try
     {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: emailController.text.trim(),
-          password: passwordController.text.trim()
-      );
-      var user = FirebaseAuth.instance.currentUser!;
-      user.updateDisplayName(nameController.text.trim());
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: emailController.text.trim(),
+            password: passwordController.text.trim()
+          );
+
+        final userdata = UserData(
+            Name: nameController.text.trim(),
+            Email: emailController.text.trim(),
+            Password: passwordController.text.trim(),
+            Mobile: mobileController.text.trim()
+        );
+
+        FirebaseApi.createUser(userdata);
+
     }on FirebaseAuthException catch (e)
     {
+      showToast();
       print(e);
     }
 
     navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
 }
+
+void showToast()=>Fluttertoast.showToast(
+  msg: 'Invalid Input',
+  fontSize: 13.0,
+  backgroundColor: HexColor("#091945"),
+  textColor: Colors.white,
+  gravity: ToastGravity.BOTTOM,
+);
+

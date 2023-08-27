@@ -1,7 +1,13 @@
+import 'dart:async';
+
+import 'package:code/Model/user_model.dart';
+import 'package:code/Services/firebase_services.dart';
 import 'package:code/View/Drawer/my_cart.dart';
 import 'package:code/View/Drawer/my_favorite.dart';
 import 'package:code/View/Drawer/my_orders.dart';
+import 'package:code/View/homepage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class MyAccount extends StatefulWidget {
@@ -12,11 +18,15 @@ class MyAccount extends StatefulWidget {
 }
 
 class _MyAccountState extends State<MyAccount> {
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: HexColor("#fe5858"),
+            statusBarIconBrightness: Brightness.light),
         backgroundColor: HexColor("#fe5858"),
         elevation: 0,
         automaticallyImplyLeading: false,
@@ -29,7 +39,7 @@ class _MyAccountState extends State<MyAccount> {
       ),
       body: Center(
         child: Container(
-          height: size.height*0.7,
+          height: size.height*0.75,
           width: size.width*0.9,
           child: Card(
             shape: RoundedRectangleBorder(
@@ -42,19 +52,49 @@ class _MyAccountState extends State<MyAccount> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CircleAvatar(
-                    backgroundColor: HexColor("#fe5858"),
-                    radius: size.width*0.17,
-                    child: CircleAvatar(
-                      radius: size.width*0.16,
-                      backgroundImage:  NetworkImage("https://images.pexels.com/photos/1009904/pexels-photo-1009904.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"),
-                    ),
+                  FutureBuilder<UserData>(
+                      future: FirebaseApi.readUser(),
+                      builder: (context,snapshot)
+                      {
+                        if(snapshot.hasData)
+                          {
+                            final data = snapshot.data;
+                            return Column(
+                              children: [
+                                GestureDetector(
+                                  onTap: (){
+                                    FirebaseApi.updatePhoto();
+                                    Timer(Duration(seconds: 3),()=>Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                                        HomeScreen()), (Route<dynamic> route) => false) );
+                                    // Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                                    //     HomeScreen()), (Route<dynamic> route) => false);
+                                  },
+                                  child: CircleAvatar(
+                                    backgroundColor: HexColor("#fe5858"),
+                                    radius: size.width*0.17,
+                                    child: CircleAvatar(
+                                      radius: size.width*0.16,
+                                      backgroundImage:  data?.PhotoUrl == null? AssetImage("assets/Icons/avatar.png") : NetworkImage(data!.PhotoUrl) as ImageProvider,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: size.height*0.02),
+                                Text(data!.Name,style: TextStyle(letterSpacing:0.5,fontFamily: 'ProductSans',fontSize: 18,color: HexColor("#25262d"),fontWeight: FontWeight.bold)),
+                                SizedBox(height: size.height*0.005),
+                                Text(data.Email,style: TextStyle(letterSpacing:0.5,fontFamily: 'ProductSans',fontSize: 16,color: HexColor("#25262d"))),
+                                SizedBox(height: size.height*0.005),
+                                Text('+91 ${data.Mobile}',style: TextStyle(letterSpacing:0.5,fontFamily: 'ProductSans',fontSize: 16,color: Colors.blueAccent)),
+                                SizedBox(height: size.height*0.02),
+                              ],
+                            );
+                          }
+                        else if(snapshot.hasError)
+                          {
+                            return Center(child: CircularProgressIndicator(color: Colors.red));
+                          }
+                        return Center(child:Text("Loading...",style: TextStyle(letterSpacing:0.5,fontFamily: 'ProductSans',fontSize: 16,color: HexColor("#25262d"))) );
+                      }
                   ),
-                  SizedBox(height: size.height*0.02),
-                  Text("Sierra Mike",style: TextStyle(letterSpacing:0.5,fontFamily: 'ProductSans',fontSize: 18,color: HexColor("#25262d"),fontWeight: FontWeight.bold)),
-                  SizedBox(height: size.height*0.005),
-                  Text("sierramike04@gmail.com",style: TextStyle(letterSpacing:0.5,fontFamily: 'ProductSans',fontSize: 18,color: HexColor("#25262d"))),
-                  SizedBox(height: size.height*0.02),
                   Divider(thickness: 2,color: Colors.grey.withOpacity(0.2)),
                   SizedBox(height: size.height*0.04),
                   Padding(

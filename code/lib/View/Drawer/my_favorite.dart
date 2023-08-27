@@ -1,4 +1,8 @@
+import 'package:code/Controller/favorite_controller.dart';
+import 'package:code/Model/product_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class MyFavorite extends StatefulWidget
@@ -10,12 +14,26 @@ class MyFavorite extends StatefulWidget
 }
 
 class _MyFavoriteState extends State<MyFavorite> {
+
+  final FavoriteController favoriteController = Get.put(FavoriteController());
+
+  @override
+  void initState()
+  {
+    print("initstate fav");
+    favoriteController.getFromFavorite();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: HexColor("#fe5858"),
+            statusBarIconBrightness: Brightness.light),
         backgroundColor: HexColor("#fe5858"),
         elevation: 0,
         automaticallyImplyLeading: false,
@@ -28,16 +46,29 @@ class _MyFavoriteState extends State<MyFavorite> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ListView(
+        child: Column(
           children: [
-            productCard(size)
+            Expanded(
+                  child: Obx(() =>
+                      ListView.separated(
+                        physics: BouncingScrollPhysics(),
+                        separatorBuilder: (context, index)=>Container(height: 8),
+                        itemCount: favoriteController.favoriteItems.length,
+                        itemBuilder: (context,index)
+                        {
+                          return productCard(favoriteController.favoriteItems[index],size);
+                        },
+                      ),
+                  )
+
+              ),
           ],
         ),
-      )
+      ),
     );
   }
 
-  Widget productCard(Size size)
+  Widget productCard(ProductModel pModel,Size size)
   {
     return Center(
       child: Container(
@@ -48,28 +79,19 @@ class _MyFavoriteState extends State<MyFavorite> {
           borderRadius: BorderRadius.circular(10.0),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(0.0),
           child: Row(
             children: [
               Container(
-                height: size.height*0.25,
-                width: size.width*0.4,
+                padding: EdgeInsets.all(10),
+                height: size.height*0.18,
+                width: size.width*0.35,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black54.withOpacity(0.2),
-                      offset: const Offset(
-                        3.0,
-                        3.0,
-                      ),
-                      blurRadius:8.0,
-                      spreadRadius: 0.0,
-                    )
-                  ],
+
                   image: DecorationImage(
-                    image: NetworkImage("https://images.unsplash.com/photo-1630080644615-0b157f1574ec?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80"),
-                    fit: BoxFit.fill,
+                    image: NetworkImage(pModel.image),
+                    fit: BoxFit.contain,
                   ),
                 ),
               ),
@@ -83,7 +105,7 @@ class _MyFavoriteState extends State<MyFavorite> {
                     Container(
                       width : size.width*0.40,
                       child: Text(
-                          "WD 4TB Gaming Drive Works with Playstation 4 Portable External Hard Drive",
+                          pModel.title,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(fontSize: 16,fontFamily: 'ProductSans',fontWeight: FontWeight.w500,color: Colors.black54)
@@ -93,15 +115,21 @@ class _MyFavoriteState extends State<MyFavorite> {
                       children: [
                         Icon(Icons.star,color:HexColor("##39b5fd"),size: 18),
                         SizedBox(width: size.width*0.01),
-                        Text("4.9",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600))
+                        Text(pModel.rating.rate.toString(),style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600))
                       ],
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text("\$ 3999",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600)),
-                      ],
+                    Container(
+                      width: size.width*0.40,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text("Rs ${pModel.price.toString()}",style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600)),
+                          IconButton(
+                            onPressed: ()=>favoriteController.deleteFromFavorite(pModel),
+                            icon:Icon(Icons.favorite,color: Colors.red))
+                        ],
+                      ),
                     ),
                   ],
                 ),

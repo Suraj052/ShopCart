@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:code/Controller/product_controller.dart';
 import 'package:code/Model/product_model.dart';
+import 'package:code/View/detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:get/get.dart';
@@ -40,7 +41,10 @@ class _WomensScreenState extends State<WomensScreen> {
                   itemCount: electronicsController.womenList.length,
                   itemBuilder: (BuildContext context, int index)
                   {
-                    return productCard(electronicsController.womenList[index],size);
+                    return GestureDetector(
+                        onTap: ()=> Navigator.push(context, MaterialPageRoute(builder: (context) => DetailPage(pModel: electronicsController.womenList[index]))),
+                            //Get.to(()=>DetailPage(pModel: electronicsController.womenList[index])),
+                        child: productCard(electronicsController.womenList[index],size));
                   }, separatorBuilder: (BuildContext context, int index) {
                   return SizedBox(height: size.height*0.015);
                 },
@@ -146,7 +150,7 @@ class _WomensScreenState extends State<WomensScreen> {
                       ],
                     ),
                     //SizedBox(height: size.height*0.06),
-                    Text('\$ ' + electronicsModel.price.toString(),style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
+                    Text('\Rs ' + electronicsModel.price.toString(),style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),
                   ],
                 ),
               )

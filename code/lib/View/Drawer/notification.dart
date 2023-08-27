@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class Notifications extends StatefulWidget {
@@ -13,6 +14,9 @@ class _NotificationsState extends State<Notifications> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: HexColor("#fe5858"),
+            statusBarIconBrightness: Brightness.light),
         backgroundColor: HexColor("#fe5858"),
         elevation: 0,
         automaticallyImplyLeading: false,
